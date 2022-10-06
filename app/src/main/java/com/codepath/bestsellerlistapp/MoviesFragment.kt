@@ -1,6 +1,7 @@
 package com.codepath.bestsellerlistapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,19 +9,24 @@ import android.widget.Toast
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codepath.bestsellerlistapp.R
+import com.codepath.asynchttpclient.AsyncHttpClient
+import com.codepath.asynchttpclient.RequestParams
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.Headers
+import org.json.JSONArray
+import org.json.JSONObject
 
-// --------------------------------//
-// CHANGE THIS TO BE YOUR API KEY  //
-// --------------------------------//
-private const val API_KEY = "<YOUR-API-KEY-HERE>"
+private const val API_KEY = "cb96f430de3435eff1d29075ae90bcbf"
 
 /*
  * The class for the only fragment in the app, which contains the progress bar,
  * recyclerView, and performs the network calls to the NY Times API.
  */
-class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
+class MoviesFragment : Fragment(), OnListFragmentInteractionListener {
 
     /*
      * Constructing the view
@@ -29,11 +35,11 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_best_seller_books_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
         val progressBar = view.findViewById<View>(R.id.progress) as ContentLoadingProgressBar
         val recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
         val context = view.context
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         updateAdapter(progressBar, recyclerView)
         return view
     }
@@ -46,10 +52,17 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
         progressBar.show()
 
         // Create and set up an AsyncHTTPClient() here
+        val client = AsyncHttpClient()
+        val params = RequestParams()
+        params["api-key"] = API_KEY
 
         // Using the client, perform the HTTP request
 
-        /* Uncomment me once you complete the above sections!
+        client[
+                "https://api.themoviedb.org/3/movie/now_playing?api_key=cb96f430de3435eff1d29075ae90bcbf",
+                params,
+                object : JsonHttpResponseHandler()
+
         {
             /*
              * The onSuccess function gets called when
@@ -65,11 +78,15 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
 
                 //TODO - Parse JSON into Models
 
-                val models : List<BestSellerBook> = null // Fix me!
-                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
+                val resultsJSON : JSONArray = json.jsonObject.getJSONArray("results") as JSONArray
+                val moviesRawJSON : String = resultsJSON.toString()
 
+                val gson = Gson()
+                val arrayMovieType = object : TypeToken<List<Movie>>() {}.type
+                val models : List<Movie> = gson.fromJson(moviesRawJSON, arrayMovieType)
+                recyclerView.adapter = MoviesRecyclerViewAdapter(models, this@MoviesFragment)
                 // Look for this in Logcat:
-                Log.d("BestSellerBooksFragment", "response successful")
+                Log.d("MoviesFragment", "response successful")
             }
 
             /*
@@ -87,18 +104,17 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
 
                 // If the error is not null, log it!
                 t?.message?.let {
-                    Log.e("BestSellerBooksFragment", errorResponse)
+                    Log.e("MoviesFragment", errorResponse)
                 }
             }
         }]
-        */
 
     }
 
     /*
-     * What happens when a particular book is clicked.
+     * What happens when a particular movie is clicked.
      */
-    override fun onItemClick(item: BestSellerBook) {
+    override fun onItemClick(item: Movie) {
         Toast.makeText(context, "test: " + item.title, Toast.LENGTH_LONG).show()
     }
 
