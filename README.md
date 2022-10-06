@@ -30,7 +30,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='FlixterAndroidWalkthorugh.gif' title='FlixterAndroidWalkthorugh' width='' alt='FlixterAndroidWalkthorugh' />
+<img src='FlixterWalkthorugh.gif' title='FlixterWalkthorugh' width='' alt='FlixterWalkthorugh' />
 
 GIF created with Adobe Express
 
