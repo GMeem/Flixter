@@ -30,7 +30,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='FlixterWalkthrough.gif' title='FlixterWalkthrough' width='' alt='FlixterWalkthrough' />
+<img src='FlixterGif.gif' title='FlixterGif' width='' alt='FlixterGif' />
 
 GIF created with Adobe Express
 
